@@ -40,6 +40,12 @@ module Jira4R
     def logger=(logger)
       @logger = logger
     end
+
+    def http_auth(http_username, http_password, http_realm)
+      @http_username = http_username
+      @http_password = http_password
+      @http_realm = http_realm
+    end
     
     #Retrieve the driver, creating as required.
     def driver()
@@ -54,6 +60,10 @@ module Jira4R
         puts "Service: #{service_classname}"
         service = eval(service_classname)
         @driver = service.send(:new, @endpoint_url)
+
+        if not ( @http_realm.nil? or @http_username.nil? or @http_password.nil? )
+          @driver.options["protocol.http.basic_auth"] << [ @http_realm, @http_username, @http_password ]
+        end
       end
       @driver
     end
@@ -166,19 +176,19 @@ module Jira4R
     end
     
     def findPermission(allowedPermissions, permissionName)
-		allowedPermissions.each { |allowedPermission|
-		   #puts "Checking #{allowedPermission.name} against #{permissionName} "
-		   return allowedPermission if allowedPermission.name == permissionName
-		}
-		return nil    
+      allowedPermissions.each { |allowedPermission|
+         #puts "Checking #{allowedPermission.name} against #{permissionName} "
+         return allowedPermission if allowedPermission.name == permissionName
+      }
+      return nil    
     end
     
     def findEntityInPermissionMapping(permissionMapping, entityName)
       permissionMapping.remoteEntities.each { |entity|
-	    return entity if entity.name == entityName
-	  }
-	  return nil
-	end
+        return entity if entity.name == entityName
+      }
+      return nil
+    end
     
     #Removes entity
     def setPermissions( permissionScheme, allowedPermissions, entity)
@@ -188,21 +198,21 @@ module Jira4R
         next unless findEntityInPermissionMapping(mapping, entity.name)
       
         allowedPermission = findPermission(allowedPermissions, mapping.permission.name)
-	    if allowedPermission
-  	      puts "Already has #{allowedPermission.name} in #{permissionScheme.name} for #{entity.name}"
-		  allowedPermissions.delete(allowedPermission)
-	      next
-	    end
+        if allowedPermission
+          puts "Already has #{allowedPermission.name} in #{permissionScheme.name} for #{entity.name}"
+          allowedPermissions.delete(allowedPermission)
+        next
+      end
 
-		puts "Deleting #{mapping.permission.name} from #{permissionScheme.name} for #{entity.name}"
+      puts "Deleting #{mapping.permission.name} from #{permissionScheme.name} for #{entity.name}"
         deletePermissionFrom( permissionScheme, mapping.permission, entity)
       }
       
       puts allowedPermissions.inspect
       allowedPermissions.each { |allowedPermission|
-		puts "Granting #{allowedPermission.name} to #{permissionScheme.name} for #{entity.name}"
-		addPermissionTo(permissionScheme, allowedPermission, entity) 
-	  }   
+        puts "Granting #{allowedPermission.name} to #{permissionScheme.name} for #{entity.name}"
+        addPermissionTo(permissionScheme, allowedPermission, entity) 
+      }   
     end
 
 private

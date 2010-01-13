@@ -121,7 +121,8 @@ module Jira4R
         return call_driver( "getProjectByKey", projectKey )
       rescue SOAP::FaultError => soap_error
         #XXX surely there is a better way to detect this kind of condition in the JIRA server
-        if soap_error.faultcode.to_s == "soapenv:Server.userException" and soap_error.faultstring.to_s == "com.atlassian.jira.rpc.exception.RemoteException: Project: #{projectKey} does not exist"
+        if (soap_error.faultcode.to_s == "soapenv:Server.userException") and
+           (soap_error.faultstring.to_s =~ /No project could be found with key '#{projectKey}'/)
           return nil
         else
           raise soap_error

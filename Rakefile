@@ -26,7 +26,7 @@ task :default => [:generate]
 desc "gets the wsdl files for JIRA services"
 task :getwsdl do
   versions().each { |version| 
-    save(getWsdlFileName(version), get_file("test.jira.codehaus.org", "/rpc/soap/jirasoapservice-v#{version}?wsdl"))
+    save(getWsdlFileName(version), get_file("jira.codehaus.org", "/rpc/soap/jirasoapservice-v#{version}?wsdl"))
   }
 end
 
@@ -35,10 +35,13 @@ task :build_gem do
 end
 
 task :clean do
-  File.unlink("wsdl/jirasoapservice-v2.wsdl")
-  File.unlink("lib/jira4r/v2/jiraService.rb")
-  File.unlink("lib/jira4r/v2/jiraServiceDriver.rb")
-  File.unlink("lib/jira4r/v2/jiraServiceMappingRegistry.rb")
+  def unl(file)
+    File.unlink(file) if File.exist?(file)
+  end
+  unl("wsdl/jirasoapservice-v2.wsdl")
+  unl("lib/jira4r/v2/jiraService.rb")
+  unl("lib/jira4r/v2/jiraServiceDriver.rb")
+  unl("lib/jira4r/v2/jiraServiceMappingRegistry.rb")
 end
 
 task :install_gem do

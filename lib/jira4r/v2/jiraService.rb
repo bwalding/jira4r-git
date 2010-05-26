@@ -34,6 +34,44 @@ class RemoteComment
   end
 end
 
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteTimeInfo
+#   serverTime - SOAP::SOAPString
+#   timeZoneId - SOAP::SOAPString
+class RemoteTimeInfo
+  attr_accessor :serverTime
+  attr_accessor :timeZoneId
+
+  def initialize(serverTime = nil, timeZoneId = nil)
+    @serverTime = serverTime
+    @timeZoneId = timeZoneId
+  end
+end
+
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteServerInfo
+#   baseUrl - SOAP::SOAPString
+#   buildDate - SOAP::SOAPDateTime
+#   buildNumber - SOAP::SOAPString
+#   edition - SOAP::SOAPString
+#   serverTime - Jira4R::V2::RemoteTimeInfo
+#   version - SOAP::SOAPString
+class RemoteServerInfo
+  attr_accessor :baseUrl
+  attr_accessor :buildDate
+  attr_accessor :buildNumber
+  attr_accessor :edition
+  attr_accessor :serverTime
+  attr_accessor :version
+
+  def initialize(baseUrl = nil, buildDate = nil, buildNumber = nil, edition = nil, serverTime = nil, version = nil)
+    @baseUrl = baseUrl
+    @buildDate = buildDate
+    @buildNumber = buildNumber
+    @edition = edition
+    @serverTime = serverTime
+    @version = version
+  end
+end
+
 # {http://beans.soap.rpc.jira.atlassian.com}RemoteEntity
 class RemoteEntity
   def initialize
@@ -69,28 +107,6 @@ class RemoteGroup < RemoteEntity
   end
 end
 
-# {http://beans.soap.rpc.jira.atlassian.com}RemoteServerInfo
-#   baseUrl - SOAP::SOAPString
-#   buildDate - SOAP::SOAPDateTime
-#   buildNumber - SOAP::SOAPString
-#   edition - SOAP::SOAPString
-#   version - SOAP::SOAPString
-class RemoteServerInfo
-  attr_accessor :baseUrl
-  attr_accessor :buildDate
-  attr_accessor :buildNumber
-  attr_accessor :edition
-  attr_accessor :version
-
-  def initialize(baseUrl = nil, buildDate = nil, buildNumber = nil, edition = nil, version = nil)
-    @baseUrl = baseUrl
-    @buildDate = buildDate
-    @buildNumber = buildNumber
-    @edition = edition
-    @version = version
-  end
-end
-
 # {http://beans.soap.rpc.jira.atlassian.com}AbstractRemoteEntity
 # abstract
 #   id - SOAP::SOAPString
@@ -107,6 +123,19 @@ end
 #   id - SOAP::SOAPString
 #   name - SOAP::SOAPString
 class AbstractNamedRemoteEntity < AbstractRemoteEntity
+  attr_accessor :id
+  attr_accessor :name
+
+  def initialize(id = nil, name = nil)
+    @id = id
+    @name = name
+  end
+end
+
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteComponent
+#   id - SOAP::SOAPString
+#   name - SOAP::SOAPString
+class RemoteComponent < AbstractNamedRemoteEntity
   attr_accessor :id
   attr_accessor :name
 
@@ -141,19 +170,6 @@ class RemoteVersion < AbstractNamedRemoteEntity
   end
 end
 
-# {http://beans.soap.rpc.jira.atlassian.com}RemoteComponent
-#   id - SOAP::SOAPString
-#   name - SOAP::SOAPString
-class RemoteComponent < AbstractNamedRemoteEntity
-  attr_accessor :id
-  attr_accessor :name
-
-  def initialize(id = nil, name = nil)
-    @id = id
-    @name = name
-  end
-end
-
 # {http://beans.soap.rpc.jira.atlassian.com}RemoteNamedObject
 #   id - SOAP::SOAPString
 #   name - SOAP::SOAPString
@@ -164,43 +180,6 @@ class RemoteNamedObject < AbstractNamedRemoteEntity
   def initialize(id = nil, name = nil)
     @id = id
     @name = name
-  end
-end
-
-# {http://beans.soap.rpc.jira.atlassian.com}RemoteProject
-#   id - SOAP::SOAPString
-#   name - SOAP::SOAPString
-#   description - SOAP::SOAPString
-#   issueSecurityScheme - Jira4R::V2::RemoteScheme
-#   key - SOAP::SOAPString
-#   lead - SOAP::SOAPString
-#   notificationScheme - Jira4R::V2::RemoteScheme
-#   permissionScheme - Jira4R::V2::RemotePermissionScheme
-#   projectUrl - SOAP::SOAPString
-#   url - SOAP::SOAPString
-class RemoteProject < AbstractNamedRemoteEntity
-  attr_accessor :id
-  attr_accessor :name
-  attr_accessor :description
-  attr_accessor :issueSecurityScheme
-  attr_accessor :key
-  attr_accessor :lead
-  attr_accessor :notificationScheme
-  attr_accessor :permissionScheme
-  attr_accessor :projectUrl
-  attr_accessor :url
-
-  def initialize(id = nil, name = nil, description = nil, issueSecurityScheme = nil, key = nil, lead = nil, notificationScheme = nil, permissionScheme = nil, projectUrl = nil, url = nil)
-    @id = id
-    @name = name
-    @description = description
-    @issueSecurityScheme = issueSecurityScheme
-    @key = key
-    @lead = lead
-    @notificationScheme = notificationScheme
-    @permissionScheme = permissionScheme
-    @projectUrl = projectUrl
-    @url = url
   end
 end
 
@@ -221,6 +200,28 @@ class AbstractRemoteConstant < AbstractNamedRemoteEntity
     @name = name
     @description = description
     @icon = icon
+  end
+end
+
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteIssueType
+#   id - SOAP::SOAPString
+#   name - SOAP::SOAPString
+#   description - SOAP::SOAPString
+#   icon - SOAP::SOAPString
+#   subTask - SOAP::SOAPBoolean
+class RemoteIssueType < AbstractRemoteConstant
+  attr_accessor :id
+  attr_accessor :name
+  attr_accessor :description
+  attr_accessor :icon
+  attr_accessor :subTask
+
+  def initialize(id = nil, name = nil, description = nil, icon = nil, subTask = nil)
+    @id = id
+    @name = name
+    @description = description
+    @icon = icon
+    @subTask = subTask
   end
 end
 
@@ -265,28 +266,6 @@ class RemoteResolution < AbstractRemoteConstant
   end
 end
 
-# {http://beans.soap.rpc.jira.atlassian.com}RemoteIssueType
-#   id - SOAP::SOAPString
-#   name - SOAP::SOAPString
-#   description - SOAP::SOAPString
-#   icon - SOAP::SOAPString
-#   subTask - SOAP::SOAPBoolean
-class RemoteIssueType < AbstractRemoteConstant
-  attr_accessor :id
-  attr_accessor :name
-  attr_accessor :description
-  attr_accessor :icon
-  attr_accessor :subTask
-
-  def initialize(id = nil, name = nil, description = nil, icon = nil, subTask = nil)
-    @id = id
-    @name = name
-    @description = description
-    @icon = icon
-    @subTask = subTask
-  end
-end
-
 # {http://beans.soap.rpc.jira.atlassian.com}RemoteStatus
 #   id - SOAP::SOAPString
 #   name - SOAP::SOAPString
@@ -303,6 +282,43 @@ class RemoteStatus < AbstractRemoteConstant
     @name = name
     @description = description
     @icon = icon
+  end
+end
+
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteProject
+#   id - SOAP::SOAPString
+#   name - SOAP::SOAPString
+#   description - SOAP::SOAPString
+#   issueSecurityScheme - Jira4R::V2::RemoteScheme
+#   key - SOAP::SOAPString
+#   lead - SOAP::SOAPString
+#   notificationScheme - Jira4R::V2::RemoteScheme
+#   permissionScheme - Jira4R::V2::RemotePermissionScheme
+#   projectUrl - SOAP::SOAPString
+#   url - SOAP::SOAPString
+class RemoteProject < AbstractNamedRemoteEntity
+  attr_accessor :id
+  attr_accessor :name
+  attr_accessor :description
+  attr_accessor :issueSecurityScheme
+  attr_accessor :key
+  attr_accessor :lead
+  attr_accessor :notificationScheme
+  attr_accessor :permissionScheme
+  attr_accessor :projectUrl
+  attr_accessor :url
+
+  def initialize(id = nil, name = nil, description = nil, issueSecurityScheme = nil, key = nil, lead = nil, notificationScheme = nil, permissionScheme = nil, projectUrl = nil, url = nil)
+    @id = id
+    @name = name
+    @description = description
+    @issueSecurityScheme = issueSecurityScheme
+    @key = key
+    @lead = lead
+    @notificationScheme = notificationScheme
+    @permissionScheme = permissionScheme
+    @projectUrl = projectUrl
+    @url = url
   end
 end
 
@@ -341,6 +357,22 @@ class RemoteFilter < AbstractNamedRemoteEntity
     @description = description
     @project = project
     @xml = xml
+  end
+end
+
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteSecurityLevel
+#   id - SOAP::SOAPString
+#   name - SOAP::SOAPString
+#   description - SOAP::SOAPString
+class RemoteSecurityLevel < AbstractNamedRemoteEntity
+  attr_accessor :id
+  attr_accessor :name
+  attr_accessor :description
+
+  def initialize(id = nil, name = nil, description = nil)
+    @id = id
+    @name = name
+    @description = description
   end
 end
 
@@ -455,6 +487,56 @@ class RemoteCustomFieldValue
   end
 end
 
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteFieldValue
+#   id - SOAP::SOAPString
+#   values - Jira4R::V2::ArrayOf_xsd_string
+class RemoteFieldValue
+  attr_accessor :id
+  attr_accessor :values
+
+  def initialize(id = nil, values = nil)
+    @id = id
+    @values = values
+  end
+end
+
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteConfiguration
+#   allowAttachments - SOAP::SOAPBoolean
+#   allowExternalUserManagment - SOAP::SOAPBoolean
+#   allowIssueLinking - SOAP::SOAPBoolean
+#   allowSubTasks - SOAP::SOAPBoolean
+#   allowTimeTracking - SOAP::SOAPBoolean
+#   allowUnassignedIssues - SOAP::SOAPBoolean
+#   allowVoting - SOAP::SOAPBoolean
+#   allowWatching - SOAP::SOAPBoolean
+#   timeTrackingDaysPerWeek - SOAP::SOAPInt
+#   timeTrackingHoursPerDay - SOAP::SOAPInt
+class RemoteConfiguration
+  attr_accessor :allowAttachments
+  attr_accessor :allowExternalUserManagment
+  attr_accessor :allowIssueLinking
+  attr_accessor :allowSubTasks
+  attr_accessor :allowTimeTracking
+  attr_accessor :allowUnassignedIssues
+  attr_accessor :allowVoting
+  attr_accessor :allowWatching
+  attr_accessor :timeTrackingDaysPerWeek
+  attr_accessor :timeTrackingHoursPerDay
+
+  def initialize(allowAttachments = nil, allowExternalUserManagment = nil, allowIssueLinking = nil, allowSubTasks = nil, allowTimeTracking = nil, allowUnassignedIssues = nil, allowVoting = nil, allowWatching = nil, timeTrackingDaysPerWeek = nil, timeTrackingHoursPerDay = nil)
+    @allowAttachments = allowAttachments
+    @allowExternalUserManagment = allowExternalUserManagment
+    @allowIssueLinking = allowIssueLinking
+    @allowSubTasks = allowSubTasks
+    @allowTimeTracking = allowTimeTracking
+    @allowUnassignedIssues = allowUnassignedIssues
+    @allowVoting = allowVoting
+    @allowWatching = allowWatching
+    @timeTrackingDaysPerWeek = timeTrackingDaysPerWeek
+    @timeTrackingHoursPerDay = timeTrackingHoursPerDay
+  end
+end
+
 # {http://beans.soap.rpc.jira.atlassian.com}RemoteScheme
 #   description - SOAP::SOAPString
 #   id - SOAP::SOAPLong
@@ -519,56 +601,6 @@ class RemotePermissionMapping
   def initialize(permission = nil, remoteEntities = nil)
     @permission = permission
     @remoteEntities = remoteEntities
-  end
-end
-
-# {http://beans.soap.rpc.jira.atlassian.com}RemoteFieldValue
-#   id - SOAP::SOAPString
-#   values - Jira4R::V2::ArrayOf_xsd_string
-class RemoteFieldValue
-  attr_accessor :id
-  attr_accessor :values
-
-  def initialize(id = nil, values = nil)
-    @id = id
-    @values = values
-  end
-end
-
-# {http://beans.soap.rpc.jira.atlassian.com}RemoteConfiguration
-#   allowAttachments - SOAP::SOAPBoolean
-#   allowExternalUserManagment - SOAP::SOAPBoolean
-#   allowIssueLinking - SOAP::SOAPBoolean
-#   allowSubTasks - SOAP::SOAPBoolean
-#   allowTimeTracking - SOAP::SOAPBoolean
-#   allowUnassignedIssues - SOAP::SOAPBoolean
-#   allowVoting - SOAP::SOAPBoolean
-#   allowWatching - SOAP::SOAPBoolean
-#   timeTrackingDaysPerWeek - SOAP::SOAPInt
-#   timeTrackingHoursPerDay - SOAP::SOAPInt
-class RemoteConfiguration
-  attr_accessor :allowAttachments
-  attr_accessor :allowExternalUserManagment
-  attr_accessor :allowIssueLinking
-  attr_accessor :allowSubTasks
-  attr_accessor :allowTimeTracking
-  attr_accessor :allowUnassignedIssues
-  attr_accessor :allowVoting
-  attr_accessor :allowWatching
-  attr_accessor :timeTrackingDaysPerWeek
-  attr_accessor :timeTrackingHoursPerDay
-
-  def initialize(allowAttachments = nil, allowExternalUserManagment = nil, allowIssueLinking = nil, allowSubTasks = nil, allowTimeTracking = nil, allowUnassignedIssues = nil, allowVoting = nil, allowWatching = nil, timeTrackingDaysPerWeek = nil, timeTrackingHoursPerDay = nil)
-    @allowAttachments = allowAttachments
-    @allowExternalUserManagment = allowExternalUserManagment
-    @allowIssueLinking = allowIssueLinking
-    @allowSubTasks = allowSubTasks
-    @allowTimeTracking = allowTimeTracking
-    @allowUnassignedIssues = allowUnassignedIssues
-    @allowVoting = allowVoting
-    @allowWatching = allowWatching
-    @timeTrackingDaysPerWeek = timeTrackingDaysPerWeek
-    @timeTrackingHoursPerDay = timeTrackingHoursPerDay
   end
 end
 
@@ -645,6 +677,31 @@ class RemoteProjectRoleActors < RemoteRoleActors
   end
 end
 
+# {http://beans.soap.rpc.jira.atlassian.com}RemoteAvatar
+#   base64Data - SOAP::SOAPString
+#   contentType - SOAP::SOAPString
+#   id - SOAP::SOAPLong
+#   owner - SOAP::SOAPString
+#   system - SOAP::SOAPBoolean
+#   type - SOAP::SOAPString
+class RemoteAvatar
+  attr_accessor :base64Data
+  attr_accessor :contentType
+  attr_accessor :id
+  attr_accessor :owner
+  attr_accessor :system
+  attr_accessor :type
+
+  def initialize(base64Data = nil, contentType = nil, id = nil, owner = nil, system = nil, type = nil)
+    @base64Data = base64Data
+    @contentType = contentType
+    @id = id
+    @owner = owner
+    @system = system
+    @type = type
+  end
+end
+
 # {http://beans.soap.rpc.jira.atlassian.com}RemoteWorklog
 #   author - SOAP::SOAPString
 #   comment - SOAP::SOAPString
@@ -685,20 +742,48 @@ class RemoteWorklog
   end
 end
 
+# {http://service.soap.rpc.jira.atlassian.com}RemoteWorklogImpl
+#   author - SOAP::SOAPString
+#   comment - SOAP::SOAPString
+#   created - SOAP::SOAPDateTime
+#   groupLevel - SOAP::SOAPString
+#   id - SOAP::SOAPString
+#   roleLevelId - SOAP::SOAPString
+#   startDate - SOAP::SOAPDateTime
+#   timeSpent - SOAP::SOAPString
+#   timeSpentInSeconds - SOAP::SOAPLong
+#   updateAuthor - SOAP::SOAPString
+#   updated - SOAP::SOAPDateTime
+class RemoteWorklogImpl < RemoteWorklog
+  attr_accessor :author
+  attr_accessor :comment
+  attr_accessor :created
+  attr_accessor :groupLevel
+  attr_accessor :id
+  attr_accessor :roleLevelId
+  attr_accessor :startDate
+  attr_accessor :timeSpent
+  attr_accessor :timeSpentInSeconds
+  attr_accessor :updateAuthor
+  attr_accessor :updated
+
+  def initialize(author = nil, comment = nil, created = nil, groupLevel = nil, id = nil, roleLevelId = nil, startDate = nil, timeSpent = nil, timeSpentInSeconds = nil, updateAuthor = nil, updated = nil)
+    @author = author
+    @comment = comment
+    @created = created
+    @groupLevel = groupLevel
+    @id = id
+    @roleLevelId = roleLevelId
+    @startDate = startDate
+    @timeSpent = timeSpent
+    @timeSpentInSeconds = timeSpentInSeconds
+    @updateAuthor = updateAuthor
+    @updated = updated
+  end
+end
+
 # {http://exception.rpc.jira.atlassian.com}RemoteException
 class RemoteException < ::StandardError
-  def initialize
-  end
-end
-
-# {http://exception.rpc.jira.atlassian.com}RemoteAuthenticationException
-class RemoteAuthenticationException < ::StandardError
-  def initialize
-  end
-end
-
-# {http://exception.rpc.jira.atlassian.com}RemoteValidationException
-class RemoteValidationException < ::StandardError
   def initialize
   end
 end
@@ -709,108 +794,128 @@ class RemotePermissionException < ::StandardError
   end
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteUser
+# {http://exception.rpc.jira.atlassian.com}RemoteValidationException
+class RemoteValidationException < ::StandardError
+  def initialize
+  end
+end
+
+# {http://exception.rpc.jira.atlassian.com}RemoteAuthenticationException
+class RemoteAuthenticationException < ::StandardError
+  def initialize
+  end
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteUser
 class ArrayOf_tns1_RemoteUser < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteVersion
-class ArrayOf_tns1_RemoteVersion < ::Array
-end
-
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_xsd_string
-class ArrayOf_xsd_string < ::Array
-end
-
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteComponent
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteComponent
 class ArrayOf_tns1_RemoteComponent < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteCustomFieldValue
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteVersion
+class ArrayOf_tns1_RemoteVersion < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_xsd_string
+class ArrayOf_xsd_string < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteCustomFieldValue
 class ArrayOf_tns1_RemoteCustomFieldValue < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteNamedObject
-class ArrayOf_tns1_RemoteNamedObject < ::Array
-end
-
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteEntity
-class ArrayOf_tns1_RemoteEntity < ::Array
-end
-
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemotePermissionMapping
-class ArrayOf_tns1_RemotePermissionMapping < ::Array
-end
-
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteProject
-class ArrayOf_tns1_RemoteProject < ::Array
-end
-
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteFieldValue
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteFieldValue
 class ArrayOf_tns1_RemoteFieldValue < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemotePriority
-class ArrayOf_tns1_RemotePriority < ::Array
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteNamedObject
+class ArrayOf_tns1_RemoteNamedObject < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteResolution
-class ArrayOf_tns1_RemoteResolution < ::Array
-end
-
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteIssueType
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteIssueType
 class ArrayOf_tns1_RemoteIssueType < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteStatus
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteEntity
+class ArrayOf_tns1_RemoteEntity < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemotePermissionMapping
+class ArrayOf_tns1_RemotePermissionMapping < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemotePriority
+class ArrayOf_tns1_RemotePriority < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteResolution
+class ArrayOf_tns1_RemoteResolution < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteStatus
 class ArrayOf_tns1_RemoteStatus < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteProjectRole
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteProjectRole
 class ArrayOf_tns1_RemoteProjectRole < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteRoleActor
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteRoleActor
 class ArrayOf_tns1_RemoteRoleActor < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteScheme
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteScheme
 class ArrayOf_tns1_RemoteScheme < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteField
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteField
 class ArrayOf_tns1_RemoteField < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteFilter
-class ArrayOf_tns1_RemoteFilter < ::Array
-end
-
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteComment
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteComment
 class ArrayOf_tns1_RemoteComment < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_xsd_base64Binary
-class ArrayOf_xsd_base64Binary < ::Array
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteFilter
+class ArrayOf_tns1_RemoteFilter < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteAttachment
-class ArrayOf_tns1_RemoteAttachment < ::Array
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteSecurityLevel
+class ArrayOf_tns1_RemoteSecurityLevel < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteWorklog
-class ArrayOf_tns1_RemoteWorklog < ::Array
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteAvatar
+class ArrayOf_tns1_RemoteAvatar < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemotePermissionScheme
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemotePermissionScheme
 class ArrayOf_tns1_RemotePermissionScheme < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemotePermission
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemotePermission
 class ArrayOf_tns1_RemotePermission < ::Array
 end
 
-# {http://jira.atlassian.com/rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteIssue
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_xsd_base64Binary
+class ArrayOf_xsd_base64Binary < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteAttachment
+class ArrayOf_tns1_RemoteAttachment < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteWorklog
+class ArrayOf_tns1_RemoteWorklog < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteIssue
 class ArrayOf_tns1_RemoteIssue < ::Array
+end
+
+# {http://jira.codehaus.org//rpc/soap/jirasoapservice-v2}ArrayOf_tns1_RemoteProject
+class ArrayOf_tns1_RemoteProject < ::Array
 end
 
 

@@ -1,7 +1,7 @@
 # Jira for Ruby
 
 ## Prerequisites 
-SVN HEAD version of SOAP4R (http://dev.ctor.org/soap4r) is required.
+SVN HEAD version of SOAP4R [http://dev.ctor.org/soap4r](http://dev.ctor.org/soap4r) is required.
 
 ## Build
     gem build jira4r.gemspec
@@ -68,4 +68,4 @@ All Jira's SOAP APIs are exposed via Jira4R. In addtion, Jira4R exposes these me
 
 ## Some examples
 
-http://svn.rubyhaus.org/jira4r/trunk/examples/
+[Code examples](http://svn.rubyhaus.org/jira4r/trunk/examples/)

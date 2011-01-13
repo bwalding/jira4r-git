@@ -17,18 +17,3 @@
 #Oh how I hate thee...
 $: << File.dirname(__FILE__) + '/..'
 require 'jira4r/jira_tool.rb'
-
-#Due to refactoring, this class should no longer be used.
-module Jira
-  class JiraTool
-    puts "Jira::JiraTool is deprecated; use Jira4R::JiraTool"
-    
-    def initialize(version, base_url)
-      @proxy = ::Jira4R::JiraTool.new(version, base_url)
-    end
-    
-    def method_missing(name, *args)
-      @proxy.send(name, *args)
-    end
-  end
-end
